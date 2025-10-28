@@ -129,10 +129,23 @@ function draw() {
             states[x] -= 0.01;
         }
     }
+    playAudio()
 
 }
 
 //eventss
+
+function playAudio() {
+    if (!dropNode) {
+        return;
+    }
+    if (audioContext.state === 'suspended') {
+        return;
+    }
+    dropNode.setParamValue("/brass/blower/pressure", Math.abs(rotationX / 180.0));
+    // dropNode.setParamValue("/brass/blower/pressure", mouseX / windowWidth);
+    console.log(mouseX / windowWidth)
+}
 
 function mousePressed() {
     if (!dropNode) {
@@ -141,8 +154,8 @@ function mousePressed() {
     if (audioContext.state === 'suspended') {
         audioContext.resume();
     }
-    dropNode.setParamValue("/brass/blower/pressure", mouseX / windowWidth);
-    console.log(mouseX / windowWidth)
+    // dropNode.setParamValue("/brass/blower/pressure", mouseX / windowWidth);
+    // console.log(mouseX / windowWidth)
 }
 
 function updateRealtimeVals() {
@@ -158,13 +171,6 @@ function deviceTurned() {
     threshVals[1] = turnAxis;
     bgCol = color(0, 255, 0);
     states[1] = 1;
-    if (!dropNode) {
-        return;
-    }
-    if (audioContext.state === 'suspended') {
-        audioContext.resume();
-    }
-    dropNode.setParamValue("/brass/blower/pressure", Math.abs(rotationX / 180.0));
 }
 function deviceShaken() {
     bgCol = color(255, 0, 0);
