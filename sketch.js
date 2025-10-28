@@ -1,41 +1,3 @@
-// class Drop {
-//     constructor(pos) {
-//         this.pos = pos;
-//         this.rad = 0;
-//         this.life = 255;
-//     }
-
-//     update() {
-//         this.rad++;
-//         this.life -= 3;
-//     }
-
-//     draw() {
-//         push();
-//         stroke(255, this.life);
-//         noFill();
-//         circle(this.pos.x, this.pos.y, this.rad * 2);
-//         pop();
-//     }
-// }
-
-
-// const audioContext = new AudioContext();
-// let dropNode = null;
-// let drops = [];
-
-
-// function setup() {
-//     createCanvas(600, 600);
-//     drop.createDSP(audioContext, 1024)
-//         .then(node => {
-//             dropNode = node;
-//             dropNode.connect(audioContext.destination);
-//             console.log('params: ', dropNode.getParams());
-//         });
-// }
-
-
 //==========================================================================================
 // P5.js
 //==========================================================================================
@@ -100,7 +62,6 @@ function setup() {
 }
 
 function draw() {
-
     //update realtime vals
     vals[1] = round(accelerationX, 4);
     vals[2] = round(accelerationY, 4);
@@ -173,8 +134,19 @@ function draw() {
 
 //eventss
 
+function mousePressed() {
+    if (!dropNode) {
+        return;
+    }
+    if (audioContext.state === 'suspended') {
+        audioContext.resume();
+    }
+    dropNode.setParamValue("/brass/blower/pressure", mouseX / windowWidth);
+    console.log(mouseX / windowWidth)
+}
+
 function updateRealtimeVals() {
-    // dropNode.setParamValue("/brass/blower/pressure", rotationX);
+    // dropNode.setParamValue("/brass/blower/pressure", Math.abs(rotationX / 180.0));
 }
 
 function deviceMoved() {
@@ -186,17 +158,59 @@ function deviceTurned() {
     threshVals[1] = turnAxis;
     bgCol = color(0, 255, 0);
     states[1] = 1;
+    if (!dropNode) {
+        return;
+    }
+    if (audioContext.state === 'suspended') {
+        audioContext.resume();
+    }
+    dropNode.setParamValue("/brass/blower/pressure", Math.abs(rotationX / 180.0));
 }
 function deviceShaken() {
     bgCol = color(255, 0, 0);
     states[0] = 1;
-    if (!dropNode || !audioContext) return;
-    // playFaust(windowHeight - mouseY, dropNode, audioContext)
 }
 
 //==========================================================================================
 // END
 //==========================================================================================
+
+// class Drop {
+//     constructor(pos) {
+//         this.pos = pos;
+//         this.rad = 0;
+//         this.life = 255;
+//     }
+
+//     update() {
+//         this.rad++;
+//         this.life -= 3;
+//     }
+
+//     draw() {
+//         push();
+//         stroke(255, this.life);
+//         noFill();
+//         circle(this.pos.x, this.pos.y, this.rad * 2);
+//         pop();
+//     }
+// }
+
+
+// const audioContext = new AudioContext();
+// let dropNode = null;
+// let drops = [];
+
+
+// function setup() {
+//     createCanvas(600, 600);
+//     brass.createDSP(audioContext, 1024)
+//         .then(node => {
+//             dropNode = node;
+//             dropNode.connect(audioContext.destination);
+//             console.log('params: ', dropNode.getParams());
+//         });
+// }
 
 // function draw() {
 //     background(0);
@@ -216,8 +230,8 @@ function deviceShaken() {
 //     if (audioContext.state === 'suspended') {
 //         audioContext.resume();
 //     }
-//     console.log(mouseX/windowWidth) 
-//     dropNode.setParamValue("/brass/blower/pressure", mouseX/windowWidth);
+//     console.log(mouseX / windowWidth)
+//     dropNode.setParamValue("/brass/blower/pressure", mouseX / windowWidth);
 //     // dropNode.setParamValue("/thunder/rumble", 1);
 //     // setTimeout(() => { dropNode.setParamValue("/thunder/rumble", 0) }, 1000);
 //     dropNode.setParamValue('/drop/drop', 1.0);
