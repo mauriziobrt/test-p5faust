@@ -142,9 +142,36 @@ function playAudio() {
     if (audioContext.state === 'suspended') {
         return;
     }
-    dropNode.setParamValue("/brass/blower/pressure", Math.abs(rotationX / 180.0));
-    // dropNode.setParamValue("/brass/blower/pressure", mouseX / windowWidth);
-    console.log(mouseX / windowWidth)
+    // dropNode.setParamValue("/brass/blower/pressure", Math.pow(Math.abs(rotationX / 180.0))/ 2);
+    // dropNode.setParamValue("/brass/blower/pressure", Math.abs(rotationX / 180.0));
+    // console.log(Math.pow((mouseX / windowWidth),2))
+    const rotationValueX = Math.abs(rotationX / 180.0)
+    const mouseValueX = (mouseX / windowWidth)
+    dropNode.setParamValue("/brass/blower/pressure", Math.pow(rotationValueX, 2));
+
+    // dropNode.setParamValue("/brass/brassModel/tubeLength", mouseY / windowHeight);
+    // console.log(mouseX / windowWidth)
+    // Quantize tube length to a musical scale
+    // const rawTubeLength = mouseY / windowHeight;
+    const mouseValueY = mouseY / windowHeight;
+    const rotationValueY = Math.abs(rotationY / 180.0);
+    const rawTubeLength = rotationValueY;
+    const quantizedTubeLength = quantizeToScale(rawTubeLength);
+    console.log(Math.pow(quantizedTubeLength, 2))
+    dropNode.setParamValue("/brass/brassModel/tubeLength", 0.0001 + Math.pow(quantizedTubeLength, 0.5));
+}
+
+function quantizeToScale(value) {
+    // Define scale notes (12-tone chromatic)
+    const scaleSteps = 5;
+    const octaves = 4; // Number of octaves between 0 and 1
+    const totalSteps = scaleSteps * octaves;
+
+    // Map value to step number
+    const step = Math.round(value * totalSteps);
+
+    // Quantize back to value
+    return step / totalSteps;
 }
 
 function mousePressed() {
