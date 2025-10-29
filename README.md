@@ -1,6 +1,6 @@
 # p5.js faust example
 
-[example](https://enkatsu.github.io/p5js-faust-example/)
+[example](https://mauriziobrt.github.io/test-p5faust/)
 
 ## Build
 
