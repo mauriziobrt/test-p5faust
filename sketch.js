@@ -5,6 +5,7 @@
 const audioContext = new AudioContext();
 let dropNode = null;
 let drops = [];
+let dropNodeParams = null;
 
 let leftMargin = 50; // (50) edit this to change left margin 
 let textSiz = 25; // (25)edit this to change text label text size
@@ -53,11 +54,21 @@ function setup() {
     sliders[2].position(10, 10);
     sliders[2].size(sliderWidth);
 
-    brass.createDSP(audioContext, 1024)
+    bells.createDSP(audioContext, 1024)
         .then(node => {
             dropNode = node;
             dropNode.connect(audioContext.destination);
             console.log('params: ', dropNode.getParams());
+            const jsonString = dropNode.getJSON();
+            const jsonParams = JSON.parse(jsonString)["ui"][0]["items"];
+            dropNodeParams = jsonParams
+            console.log('parsed object: ', dropNodeParams);
+            const strikePositionObj = dropNodeParams.find(item => item.address === "/englishBell/strikePosition");
+            // Get the min value
+            const minValue = strikePositionObj?.min;
+            const maxValue = strikePositionObj?.max;
+            console.log('min value:', minValue, " max value:", maxValue); // Should output: 0
+            // console.log('json: ', dropNode.getJSON());
         });
 }
 
@@ -147,7 +158,12 @@ function playAudio() {
     // console.log(Math.pow((mouseX / windowWidth),2))
     const rotationValueX = Math.abs(rotationX / 180.0)
     const mouseValueX = (mouseX / windowWidth)
-    dropNode.setParamValue("/brass/blower/pressure", Math.pow(rotationValueX, 2));
+    // dropNode.setParamValue("/brass/blower/pressure", Math.pow(rotationValueX, 2));
+    // Need a function before this mmm
+    // console.log(dropNodeParams)
+    dropNode.setParamValue("/englishBell/gate", 1);
+    dropNode.setParamValue("/englishBell/strikeCutOff", 1 + (mouseValueX * 2000));
+    setTimeout(() => { dropNode.setParamValue("/englishBell/gate", 0) }, 1);
 
     // dropNode.setParamValue("/brass/brassModel/tubeLength", mouseY / windowHeight);
     // console.log(mouseX / windowWidth)
@@ -157,8 +173,8 @@ function playAudio() {
     const rotationValueY = Math.abs(rotationY / 180.0);
     const rawTubeLength = rotationValueY;
     const quantizedTubeLength = quantizeToScale(rawTubeLength);
-    console.log(Math.pow(quantizedTubeLength, 2))
-    dropNode.setParamValue("/brass/brassModel/tubeLength", 0.0001 + Math.pow(quantizedTubeLength, 0.5));
+    // console.log(Math.pow(quantizedTubeLength, 2))
+    // dropNode.setParamValue("/brass/brassModel/tubeLength", 0.0001 + Math.pow(quantizedTubeLength, 0.5));
 }
 
 function quantizeToScale(value) {
@@ -172,6 +188,14 @@ function quantizeToScale(value) {
 
     // Quantize back to value
     return step / totalSteps;
+}
+
+function scaletoParam(address) {
+
+}
+
+function scaletoParam(address) {
+    
 }
 
 function mousePressed() {
