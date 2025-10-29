@@ -54,7 +54,7 @@ function setup() {
     sliders[2].position(10, 10);
     sliders[2].size(sliderWidth);
 
-    bells.createDSP(audioContext, 1024)
+    brass.createDSP(audioContext, 1024)
         .then(node => {
             dropNode = node;
             dropNode.connect(audioContext.destination);
@@ -158,14 +158,14 @@ function playAudio() {
     // console.log(Math.pow((mouseX / windowWidth),2))
     const rotationValueX = Math.abs(rotationX / 180.0)
     const mouseValueX = (mouseX / windowWidth)
-    // dropNode.setParamValue("/brass/blower/pressure", Math.pow(rotationValueX, 2));
+    dropNode.setParamValue("/brass/blower/pressure", Math.pow(rotationValueX, 2));
     // Need a function before this mmm
     // console.log(dropNodeParams)
-    dropNode.setParamValue("/englishBell/gate", 1);
-    dropNode.setParamValue("/englishBell/strikeCutOff", 1 + (mouseValueX * 2000));
-    setTimeout(() => { dropNode.setParamValue("/englishBell/gate", 0) }, 1);
+    // dropNode.setParamValue("/englishBell/gate", 1);
+    // dropNode.setParamValue("/englishBell/strikeCutOff", 1 + (mouseValueX * 2000));
+    // setTimeout(() => { dropNode.setParamValue("/englishBell/gate", 0) }, 1);
 
-    // dropNode.setParamValue("/brass/brassModel/tubeLength", mouseY / windowHeight);
+    dropNode.setParamValue("/brass/brassModel/tubeLength", mouseY / windowHeight);
     // console.log(mouseX / windowWidth)
     // Quantize tube length to a musical scale
     // const rawTubeLength = mouseY / windowHeight;

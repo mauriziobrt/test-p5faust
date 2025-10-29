@@ -465,7 +465,7 @@ class FaustWasm2ScriptProcessor {
     }
 }
 
-const dspName = "bells";
+const dspName = "brass";
 const instance = new FaustWasm2ScriptProcessor(dspName);
 
 // output to window or npm package module
