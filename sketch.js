@@ -205,6 +205,7 @@ function mousePressed() {
     if (audioContext.state === 'suspended') {
         audioContext.resume();
     }
+    DeviceMotionEvent.requestPermission()
     // dropNode.setParamValue("/brass/blower/pressure", mouseX / windowWidth);
     // console.log(mouseX / windowWidth)
 }
