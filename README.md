@@ -33,12 +33,18 @@ By the end of this lab, you will be able to:
 
 ## Configuration
 
-1. Open `index.html` and locate **line 12**:
+1. Open `sketch.js` and locate **line 6**:
 
    ```javascript
    const dspName = "tuono";
    ```
 2. Replace `"tuono"` with the name of your generated WASM file (without the `.wasm` extension).
+3. Locate the following string and replace tuono with the name of your WASM file:
+    
+    ```javascript
+        tuono.createDSP(audioContext, 1024)
+        .then(node => {...
+    ```
 
 ---
 

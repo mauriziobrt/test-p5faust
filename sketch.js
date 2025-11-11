@@ -2,6 +2,19 @@
 // P5.js
 //==========================================================================================
 
+// Change here to ("tuono") depending on your wasm file name
+const dspName = "tuono";
+const instance = new FaustWasm2ScriptProcessor(dspName);
+
+// output to window or npm package module
+if (typeof module === "undefined") {
+    window[dspName] = instance;
+} else {
+    const exp = {};
+    exp[dspName] = instance;
+    module.exports = exp;
+}
+
 const audioContext = new AudioContext();
 let dropNode = null;
 let drops = [];
@@ -18,7 +31,6 @@ let textCol = 255;
 let textAccent = 0;
 let targetBgCol = 0;
 let bgCol = 0;
-
 
 //init slider stuff
 let sliders = [];
@@ -42,7 +54,6 @@ button.addEventListener('click', function () {
     if (!dropNode) {
         return;
     }
-
     if (audioContext.state === 'suspended') {
         audioContext.resume();
         button.textContent = 'Stop Audio';
@@ -59,7 +70,8 @@ function setMotionListeners() {
         DeviceMotionEvent.requestPermission()
             .then(permissionState => {
                 if (permissionState === 'granted') {
-                    alert('Motion sensors permission denied. Please enable in Settings > Safari > Motion & Orientation Access');
+                    console.log("Permission granted to sensors");
+                    // alert('Motion sensors permission denied. Please enable in Settings > Safari > Motion & Orientation Access');
                     // Permission granted - add listeners
                     // window.addEventListener('devicemotion', handleMotion);
                     // window.addEventListener('deviceorientation', handleOrientation);
@@ -69,75 +81,8 @@ function setMotionListeners() {
                 console.log("Error getting sensor permission: %O", error);
                 alert('Motion sensors permission denied. Please enable in Settings > Safari > Motion & Orientation Access');
             });
-    } else {
-        alert('Motion sensors permission denied. Please enable in Settings > Safari > Motion & Orientation Access');
-        // Non-iOS 13+ devices - add listeners directly
-        // window.addEventListener('devicemotion', handleMotion);
-        // window.addEventListener('deviceorientation', handleOrientation);
     }
 }
-
-const permissionButton = document.getElementById('requestPermission');
-permissionButton.addEventListener('click', function () {
-    if (window.DeviceOrientationEvent) {
-        window.addEventListener(
-            "deviceorientation",
-            (event) => {
-                const rotateDegrees = event.alpha; // alpha: rotation around z-axis
-                const leftToRight = event.gamma; // gamma: left to right
-                const frontToBack = event.beta; // beta: front back motion
-                handleOrientationEvent(frontToBack, leftToRight, rotateDegrees);
-            },
-            true,
-        );
-        alert('test');
-    } else {
-        alert('Motion sensors permission denied. Please enable in Settings > Safari > Motion & Orientation Access');
-    }
-
-
-    // setMotionListeners();
-    // permissionButton.style.display = 'none'; // Hide after permission granted
-});
-
-function handleOrientationEvent(frontToBack, leftToRight, rotateDegrees) {
-  // do something amazing
-  permissionButton.textContent = frontToBack;
-}
-// function setMotionListeners() {
-
-//     if (typeof DeviceMotionEvent.requestPermission === 'function') {
-
-//         // Note: You can use "DeviceOrientationEvent" here as well
-
-//         DeviceMotionEvent.requestPermission()
-//             .catch((error) => {
-//                 console.log("Error getting sensor permission: %O", error)
-//                 return // Exit out of logic
-//             })
-//     }
-
-//     // ----------------------------------
-
-//     // At this point...
-
-//     // 1 - Browsers using requestPermission (e.g. Safari iOS)
-//     // make it here because users have allowed the above permission.
-
-//     // 2 - Browsers not-using requestPermission (e.g. everyone else)
-//     // make it here normally, because they ignore the above 
-//     // condition check. Such browsers auto-prompt the user
-//     // for permission, when the listener is triggered the very first time.
-
-//     // 3 - Browsers that have no sensors at all
-//     // (e.g. the typical desktop device) ignore all of this, 
-//     // including your listeners below.
-
-//     // ----------------------------------
-
-//     // Declare your motion and orientation listeners...
-
-// }
 
 
 function setup() {
@@ -160,6 +105,7 @@ function setup() {
     sliders[2].position(10, 10);
     sliders[2].size(sliderWidth);
 
+    // The name should be the same as the WASM file, so change tuono with brass if you use brass.wasm
     tuono.createDSP(audioContext, 1024)
         .then(node => {
             dropNode = node;
@@ -168,14 +114,34 @@ function setup() {
             const jsonString = dropNode.getJSON();
             const jsonParams = JSON.parse(jsonString)["ui"][0]["items"];
             dropNodeParams = jsonParams
-            // console.log('parsed object: ', dropNodeParams);
-            // const strikePositionObj = dropNodeParams.find(item => item.address === "/englishBell/strikePosition");
-            // Get the min value
-            // const minValue = strikePositionObj?.min;
-            // const maxValue = strikePositionObj?.max;
-            // console.log('min value:', minValue, " max value:", maxValue); // Should output: 0
-            // console.log('json: ', dropNode.getJSON());
+            const exampleMinMaxParam = findByAddress(dropNodeParams, "/thunder/rumble");
+            // ALWAYS PAY ATTENTION TO MIN AND MAX, ELSE YOU MAY GET REALLY HIGH VOLUMES FROM YOUR SPEAKERS
+            const [exampleMinValue, exampleMaxValue] = getParamMinMax(exampleMinMaxParam);
+            console.log('Min value:', exampleMinValue,'Max value:',  exampleMaxValue);
         });
+}
+
+
+function findByAddress(obj, address) {
+  if (obj.address === address) return obj;
+  if (Array.isArray(obj)) {
+    for (const el of obj) {
+      const found = findByAddress(el, address);
+      if (found) return found;
+    }
+  } else if (obj && typeof obj === 'object') {
+    for (const key in obj) {
+      const found = findByAddress(obj[key], address);
+      if (found) return found;
+    }
+  }
+  return null;
+}
+
+function getParamMinMax(param) {
+    const minValue = param?.min;
+    const maxValue = param?.max;
+    return [minValue, maxValue]
 }
 
 function draw() {
@@ -245,7 +211,7 @@ function draw() {
             states[x] -= 0.01;
         }
     }
-    playAudio()
+    // playAudio()
 
 }
 
@@ -258,66 +224,17 @@ function playAudio() {
     if (audioContext.state === 'suspended') {
         return;
     }
-    // dropNode.setParamValue("/brass/blower/pressure", Math.pow(Math.abs(rotationX / 180.0))/ 2);
-    // dropNode.setParamValue("/brass/blower/pressure", Math.abs(rotationX / 180.0));
-    // console.log(Math.pow((mouseX / windowWidth),2))
-    // const rotationValueX = Math.abs(rotationX / 180.0)
-    // const mouseValueX = (mouseX / windowWidth)
-    // dropNode.setParamValue("/brass/blower/pressure", Math.pow(rotationValueX, 2));
-    // Need a function before this mmm
-    // console.log(dropNodeParams)
-    // dropNode.setParamValue("/englishBell/gate", 1);
-    // dropNode.setParamValue("/englishBell/strikeCutOff", 1 + (mouseValueX * 2000));
-    // setTimeout(() => { dropNode.setParamValue("/englishBell/gate", 0) }, 1);
-
-    // dropNode.setParamValue("/brass/brassModel/tubeLength", mouseY / windowHeight);
-    // console.log(mouseX / windowWidth)
-    // Quantize tube length to a musical scale
-    // const rawTubeLength = mouseY / windowHeight;
-    // const mouseValueY = mouseY / windowHeight;
-    // const rotationValueY = Math.abs(rotationY / 180.0);
-    // const rawTubeLength = rotationValueY;
-    // const quantizedTubeLength = quantizeToScale(rawTubeLength);
-    // console.log(Math.pow(quantizedTubeLength, 2))
-    // dropNode.setParamValue("/brass/brassModel/tubeLength", 0.0001 + Math.pow(quantizedTubeLength, 0.5));
-}
-
-function quantizeToScale(value) {
-    // Define scale notes (12-tone chromatic)
-    const scaleSteps = 5;
-    const octaves = 4; // Number of octaves between 0 and 1
-    const totalSteps = scaleSteps * octaves;
-
-    // Map value to step number
-    const step = Math.round(value * totalSteps);
-
-    // Quantize back to value
-    return step / totalSteps;
-}
-
-function scaletoParam(address) {
-
-}
-
-function scaletoParam(address) {
-
+    dropNode.setParamValue("/thunder/rumble", 1)
+    setTimeout(() => { dropNode.setParamValue("/thunder/rumble", 0) }, 100);
 }
 
 function mousePressed() {
+    // Use this for debugging from the desktop!
     if (!dropNode) {
         return;
     }
     dropNode.setParamValue("/thunder/rumble", 1)
     setTimeout(() => { dropNode.setParamValue("/thunder/rumble", 0) }, 100);
-    // if (audioContext.state === 'suspended') {
-    //     audioContext.resume();
-    // }
-    // dropNode.setParamValue("/brass/blower/pressure", mouseX / windowWidth);
-    // console.log(mouseX / windowWidth)
-}
-
-function updateRealtimeVals() {
-    // dropNode.setParamValue("/brass/blower/pressure", Math.abs(rotationX / 180.0));
 }
 
 function deviceMoved() {
@@ -333,8 +250,7 @@ function deviceTurned() {
 function deviceShaken() {
     bgCol = color(255, 0, 0);
     states[0] = 1;
-    dropNode.setParamValue("/thunder/rumble", 1)
-    setTimeout(() => { dropNode.setParamValue("/thunder/rumble", 0) }, 100);
+    playAudio();
 }
 
 //==========================================================================================
