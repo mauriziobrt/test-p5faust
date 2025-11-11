@@ -1,13 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>p5.js faust example</title>
+    <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.js"></script>
     <script src="drop.js"></script>
-    <script src="sketch.js"></script>
+    <script>
+        // Change here ("tuono") depending on your wasm file name 
+        const dspName = "tuono";
+        const instance = new FaustWasm2ScriptProcessor(dspName);
+
+        // output to window or npm package module
+        if (typeof module === "undefined") {
+            window[dspName] = instance;
+        } else {
+            const exp = {};
+            exp[dspName] = instance;
+            module.exports = exp;
+        }
+    </script>
+
 </head>
+
 <body>
+    <button id="myButton" style="padding: 10px 20px; font-size: 16px; cursor: pointer; position: absolute; top: 0%">
+        Start Audio
+    </button>
+    
+    <button id="requestPermission" style="padding: 10px 20px; font-size: 16px; cursor: pointer; position: absolute; top: 5%">
+        Request Permission
+    </button>
 </body>
+<script src="sketch.js"></script>
+
 </html>
