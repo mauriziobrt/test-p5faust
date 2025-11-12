@@ -19,14 +19,15 @@ By the end of this lab, you will be able to:
 
 ## Setup
 
+0. **Install [VScode](https://code.visualstudio.com/download) or use another IDE you're comfortable with (we use VSCode)**
 1. **Use your KTH Git account.**  
-2. **Fork the lab repository** to your own GitHub account.  
+2. **Fork this lab repository** to your own GitHub account.  
    - Do **not** push to the teacher’s repository.  
 3. **Clone your forked repository** to your local computer:
    ```bash
    git clone <URL-of-your-fork>
    ```
-4. **Generate the WebAssembly (WASM)** file using [Faust IDE](https://faustide.grame.fr).
+4. **Generate the WebAssembly (WASM)** file using [Faust IDE](https://faustide.grame.fr). [TOADD how to do it]
 5. **Enable GitHub Pages** on your forked repository to host your project.
 
 ---
@@ -93,9 +94,24 @@ git push -u origin main
 * You must **fork the repository** and work on your own copy.
 * **Do not push** to the teacher’s repository.
 * Ensure your project is **published on GitHub Pages** from your fork.
-* Submit the **link to your GitHub Pages site** and your **repository URL** as your lab submission.
+* Submit the **link to your GitHub Pages site** and your **repository URL** as your lab submission on **Canvas**.
 
 ---
+
+## What you have to do
+
+- Think about interaction
+- select suitable sound
+- select suitable sound parameters
+- select interaction
+- think about min and max of accell
+- there are on/off actions and continuous ones
+- 
+
+26.0.1
+
+---
+
 
 ## Available Sounds
 
