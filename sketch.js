@@ -57,6 +57,7 @@ button.addEventListener('click', function () {
     if (audioContext.state === 'suspended') {
         audioContext.resume();
         button.textContent = 'Stop Audio';
+        setMotionListeners()
     } else {
         audioContext.suspend();
         button.textContent = 'Start Audio';
@@ -79,7 +80,7 @@ function setMotionListeners() {
             })
             .catch((error) => {
                 console.log("Error getting sensor permission: %O", error);
-                alert('Motion sensors permission denied. Please enable in Settings > Safari > Motion & Orientation Access');
+                alert('Motion sensors permission denied.');
             });
     }
 }
@@ -89,7 +90,7 @@ function setup() {
     createCanvas(windowWidth, windowHeight);
     gridSize = windowWidth / gridNum;
 
-    setMotionListeners();
+    // setMotionListeners();
     //init colours here 
     textCol = color(255);
     targetBgCol = color(0);
