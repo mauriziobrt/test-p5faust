@@ -233,8 +233,8 @@ function mousePressed() {
     if (!dropNode) {
         return;
     }
-    dropNode.setParamValue("/thunder/rumble", 1)
-    setTimeout(() => { dropNode.setParamValue("/thunder/rumble", 0) }, 100);
+    // dropNode.setParamValue("/thunder/rumble", 1)
+    // setTimeout(() => { dropNode.setParamValue("/thunder/rumble", 0) }, 100);
 }
 
 function deviceMoved() {
