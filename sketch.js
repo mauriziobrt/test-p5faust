@@ -3,7 +3,7 @@
 //==========================================================================================
 
 //init only -- edit colours in setup function 
-let bgCol = 0;
+let bgCol = 255;
 
 //init slider stuff
 let sliders = [];
@@ -25,6 +25,7 @@ let statusLabels = [];
 
 let movetimer = 0;
 let shaketimer = 0;
+let turntimer = 0;
 
 //==========================================================================================
 // AUDIO
@@ -69,15 +70,15 @@ function setup() {
   let statBox = createDiv();
   statBox.id("status");
 
-  statusLabels[0] = createP(stateLabels[0] + ":");
+  statusLabels[0] = createP(stateLabels[0] );
   statusLabels[0].parent(statBox.elt);
   statusLabels[0].id("shaken");
 
-  statusLabels[1] = createP(stateLabels[1] + ":");
+  statusLabels[1] = createP(stateLabels[1] );
   statusLabels[1].parent(statBox.elt);
   statusLabels[1].id("turned");
 
-  statusLabels[2] = createP(stateLabels[2] + ":");
+  statusLabels[2] = createP(stateLabels[2] );
   statusLabels[2].parent(statBox.elt);
   statusLabels[2].id("moved");
 
@@ -88,7 +89,7 @@ function setup() {
 
   sliders[1] = createP("shake threshold");
   sliders[1].parent(dSlider1.elt);
-  sliderWidth = width / 4;
+  //sliderWidth = width / 4;
   sliders[0] = createSlider(0, 100, 30, 1); //shaker thresh, 0 - 100, default = 30, step = 1
 
   sliders[0].size(sliderWidth);
@@ -103,7 +104,7 @@ function setup() {
   sliders[3].parent(dSlider2.elt);
 
   sliders[2] = createSlider(0, 75, 50, 1); //move thresh, 0 - 75, default = 50, step = 1
-  sliders[2].size(sliderWidth);
+///  sliders[2].size(sliderWidth);
   sliders[2].parent(dSlider2.elt);
   sliders[2].style('position', 'unset');
 
@@ -112,14 +113,14 @@ function setup() {
   //init buttons
   buttonWidth = width / 4;
   buttons[0] = createButton(buttonLabels[0]); //shaker thresh, 0 - 100, default = 30, step = 1
-  buttons[0].size(buttonWidth);
+ 
   buttons[0].id(buttonIDs[0]);
   buttons[0].parent(buttonBox.elt);
   buttons[0].mousePressed(contextAudioStart);
 }
 
 function draw() {
-  //update realtime vals
+  //update realtime vals 
 
   vals[1] = round(accelerationX, 4);
   vals[2] = round(accelerationY, 4);
@@ -134,7 +135,7 @@ function draw() {
   for (i = 0; i < labels.length; i++) {
     if (labels[i] != "") {
       document.getElementById(labelIDs[i]).innerHTML =
-        labels[i] + ":" + vals[i];
+        labels[i] + ": " + vals[i];
     }
   }
 
@@ -143,15 +144,16 @@ function draw() {
   setShakeThreshold(threshVals[0]);
   setMoveThreshold(threshVals[2]);
 
-  //set format stuff
-  background(bgCol);
-
+  if (millis() - shaketimer > 1000) { 
+    statusLabels[0].style("color", "black");
+  }
+  if (millis() - turntimer > 1000) { 
+    statusLabels[1].style("color", "black");
+  }
   if (millis() - movetimer > 1000) {
-    statusLabels[2].style("color", "aqua");
+    statusLabels[2].style("color", "black");
   }
-  if (millis() - shaketimer > 1000) {
-    statusLabels[2].style("color", "aqua");
-  }
+  
 }
 
 //==========================================================================================

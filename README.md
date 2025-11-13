@@ -1,8 +1,8 @@
-# DT-2400 Sound and Interaction Lab
+# DT-2140 Sound and Interaction Lab
 
 Try the example first to see if webaudio and motion sensors work on your phone.
 
-[example app](https://mauriziobrt.github.io/test-p5faust/)
+[example app](https://mauriziobrt.github.io/DT2140-Sound-Interaction-Lab/)
 
 # Lab Instructions
 
@@ -27,8 +27,8 @@ By the end of this lab, you will be able to:
    ```bash
    git clone <URL-of-your-fork>
    ```
-4. **Generate the WebAssembly (WASM)** file using [Faust IDE](https://faustide.grame.fr). [TOADD how to do it]
-5. **Enable GitHub Pages** on your forked repository to host your project.
+4. **Generate the WebAssembly (WASM)** file using [Faust IDE](https://faustide.grame.fr). You can see how to do it at [this link](https://docs.google.com/presentation/d/1lj7QYG4uRv8_6EkK9RaNHyYJWr_GaDGgUtBmQcBSjCM/edit?usp=sharing)
+5. **Enable GitHub Pages** on your forked repository to host your project. You can see how to do it at [this link](https://docs.google.com/presentation/d/16rdCUduoiX9MKvGQ_ZED4n1LxoCYvBTOSD802oZfJe8/edit?usp=sharing)
 
 ---
 
