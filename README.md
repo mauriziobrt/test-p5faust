@@ -34,7 +34,9 @@ By the end of this lab, you will be able to:
 
 ## Configuration
 
-1. Open `sketch.js` and locate **line 6**:
+For each interaction:
+
+1. Open `interaction-n.js` and locate the following:
 
    ```javascript
    const dspName = "tuono";
