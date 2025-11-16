@@ -1,5 +1,3 @@
-declare filename "untitled.dsp";
-declare name "untitled";
 import("stdfaust.lib");
 
 // Maximum delay time in samples (1000ms at 44.1kHz = 44100 samples)
@@ -40,4 +38,4 @@ feedbackLoop = (+ : de.delay(maxDelay, delayTimeSamples) :
 mainSignal = osc : feedbackLoop;
 
 // Output with attenuation
-process = mainSignal * 0.3 : fi.lowpass(1, 5000) <: _, _ : dm.freeverb_demo;
+process = mainSignal * 0.3  * hslider("volume", 0.7, 0, 1, 0.01) : fi.lowpass(1, 5000) <: _, _ : dm.freeverb_demo;
